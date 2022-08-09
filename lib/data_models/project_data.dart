@@ -32,6 +32,16 @@ class ProjectData {
       this.credits,
       this.tags);
 
+  static bool ifProjectExists(List<ProjectData> projectsToSearch, String projectName)
+  {
+    return projectsToSearch.indexWhere((element) => element.name == projectName) != -1;
+  }
+
+  static ProjectData getProject(List<ProjectData> projectsToSearch, String projectName)
+  {
+    return projectsToSearch.firstWhere((element) => element.name == projectName);
+  }
+
 }
 
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/data_models/project_data.dart';
-import 'package:portfolio/pages/project_page_template.dart';
+import 'package:portfolio/routing/url_routing.dart';
 
 class ProjectPreview extends StatelessWidget {
   final ProjectData project;
@@ -15,10 +15,11 @@ class ProjectPreview extends StatelessWidget {
       children: [
         InkWell(
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => ProjectPageTemplate(projectData: project)));
+            UrlRouterDelegate.changePage("Projects/${project.name}");
+            //Navigator.push(
+            //    context,
+            //    MaterialPageRoute(
+            //        builder: (_) => ProjectPageTemplate(projectData: project)));
           },
           child: Container(
             decoration: BoxDecoration(

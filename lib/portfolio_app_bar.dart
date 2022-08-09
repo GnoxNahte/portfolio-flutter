@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/pages/home_page.dart';
-import 'package:portfolio/pages/projects_page.dart';
+import 'package:portfolio/routing/url_routing.dart';
 
 class PortfolioAppBar extends StatelessWidget implements PreferredSizeWidget {
   final AppBar appBar;
@@ -26,19 +25,13 @@ class PortfolioAppBar extends StatelessWidget implements PreferredSizeWidget {
             style: TextStyle(color: Colors.white),
           ),
           // ignore: avoid_print
-          onPressed: () {
-            debugPrint("Home pressed");
-            Navigator.push(context, MaterialPageRoute(builder: (_)=>const HomePage()));
-          },
+          onPressed: () => UrlRouterDelegate.changePage("/"),
         ),
         
         OutlinedButton(
           child: const Text("Projects",
             style: TextStyle(color: Colors.white),),
-          onPressed: () { 
-            debugPrint("Projects pressed");
-            Navigator.push(context, MaterialPageRoute(builder: (_)=>const ProjectsPage()));
-          },
+          onPressed: () => UrlRouterDelegate.changePage("/projects"),
         )
       ],
     );

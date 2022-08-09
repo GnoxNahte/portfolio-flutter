@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/routing/router.dart';
-import 'package:portfolio/routing/routing_constants.dart';
+import 'package:portfolio/routing/url_routing.dart';
 
 void main() {
   runApp(const PortfolioApp());
 }
 
-class PortfolioApp extends StatelessWidget {
+class PortfolioApp extends StatefulWidget {
   const PortfolioApp({Key? key}) : super(key: key);
+
+  @override
+  State<PortfolioApp> createState() => _PortfolioAppState();
+}
+
+class _PortfolioAppState extends State<PortfolioApp> {
+  final _routerDelegate = UrlRouterDelegate();
+
+  final _routeInformationParser = UrlRouteInformationParser();
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
         title: 'Home Page',
         theme: _theme(),
-        onGenerateRoute: generateRoute,
-        initialRoute: projectsPageRoute,
+        routerDelegate: _routerDelegate,
+        routeInformationParser: _routeInformationParser,
         );
   }
 

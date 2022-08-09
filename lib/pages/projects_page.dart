@@ -3,8 +3,8 @@ import 'package:portfolio/data_models/project_data.dart';
 import 'package:portfolio/portfolio_app_bar.dart';
 import 'package:portfolio/widgets/project_preview.dart';
 
-class ProjectsPage extends StatelessWidget {
-  const ProjectsPage({Key? key}) : super(key: key);
+class ProjectsPageWidget extends StatelessWidget {
+  const ProjectsPageWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,3 +31,4 @@ class ProjectsPage extends StatelessWidget {
     );
   }
 }
+
