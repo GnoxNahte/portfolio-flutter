@@ -1,4 +1,8 @@
-const String homePageRoute = "/";
-const String projectsPageRoute = "/projects";
-const String aboutRoute = "/about";
-const String errorRoute = "/error";
+class RoutingConstants {
+  static const String homePageRoute = "/";
+  static const String projectsPageRoute = "/projects";
+  // Indiviual project pages is shows as "/projects/project_name"
+
+  static const String aboutRoute = "/about";
+  static const String errorRoute = "/error";
+}

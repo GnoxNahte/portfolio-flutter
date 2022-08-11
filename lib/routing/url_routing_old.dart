@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:portfolio/data_models/project_data.dart';
 import 'package:portfolio/pages/error_page.dart';
 import 'package:portfolio/pages/home_page.dart';
@@ -6,38 +6,14 @@ import 'package:portfolio/pages/project_page_template.dart';
 import 'package:portfolio/pages/projects_page.dart';
 import 'package:portfolio/routing/routing_constants.dart';
 
-class UrlRoutePath {
-  late List<String> pathSegments;
-  late RouteSettings routeSettings;
+class UrlRouterDelegate extends RouterDelegate<List<RouteSettings>>
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin<List<RouteSettings>> {
 
-  String path;
+  Page get _currRoutePath => _pages.last;
+  List<Page> _pages; // History of pages
 
-  ErrorData? errorData;
-
-  UrlRoutePath(this.path, {Object? arguments}) {
-    updatePath(path);
-  }
-
-  UrlRoutePath copy() {
-    return UrlRoutePath(path, arguments: routeSettings.arguments);
-  }
-
-  void updatePath(String path, {Object? arguments}) {
-    Uri uri = Uri.parse(path);
-    this.path = uri.path;
-    pathSegments = uri.pathSegments;
-    routeSettings = RouteSettings(name: path, arguments: arguments);
-  }
-}
-
-class UrlRouterDelegate extends RouterDelegate<UrlRoutePath>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin<UrlRoutePath> {
-  UrlRoutePath _currRoutePath;
-  List<UrlRoutePath> _pages; // History of pages
-
-  static final UrlRouterDelegate _instance =
-      UrlRouterDelegate._privateConstructor();
-
+// Singleton
+  static final UrlRouterDelegate _instance = UrlRouterDelegate._privateConstructor();
   factory UrlRouterDelegate() {
     return _instance;
   }
@@ -47,12 +23,11 @@ class UrlRouterDelegate extends RouterDelegate<UrlRoutePath>
 
   UrlRouterDelegate._privateConstructor()
       : navigatorKey = GlobalKey<NavigatorState>(),
-        _currRoutePath = UrlRoutePath("/"),
         _pages = [];
 
   @override
-  UrlRoutePath? get currentConfiguration {
-    return _currRoutePath;
+  List<Page> get currentConfiguration {
+    return List.of(_pages);
   }
 
   static void changePage(String url) {
@@ -176,3 +151,4 @@ class UrlRouteInformationParser extends RouteInformationParser<UrlRoutePath> {
     return RouteInformation(location: configuration.path);
   }
 }
+*/

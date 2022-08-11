@@ -8,8 +8,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   Widget screen;
 
   switch (settings.name) {
-    case homePageRoute:     screen = const HomePage(); break;
-    case projectsPageRoute: screen = const ProjectsPageWidget(); break;
+    case RoutingConstants.homePageRoute:     screen = const HomePage(); break;
+    case RoutingConstants.projectsPageRoute: screen = const ProjectsPageWidget(); break;
     default:
       // TODO: Implement a 'page not found' page
       debugPrint("Can't find page [${settings.name}]. Returning to home page");

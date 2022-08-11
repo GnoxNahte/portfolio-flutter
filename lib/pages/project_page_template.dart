@@ -24,18 +24,18 @@ class ProjectPageTemplate extends StatelessWidget {
   }
 }
 
-class ProjectPage extends Page {
-  final ProjectData project;
-
-  ProjectPage(this.project) : super(key: ValueKey(project.name));
-
-  @override
-  Route createRoute(BuildContext context) {
-    return MaterialPageRoute(
-      settings: this,
-      builder: (BuildContext context) {
-        return ProjectPageTemplate(projectData: project);
-      },
-    );
-  }
-}
+//class ProjectPage extends Page {
+//  final ProjectData project;
+//
+//  ProjectPage(this.project) : super(key: ValueKey(project.name));
+//
+//  @override
+//  Route createRoute(BuildContext context) {
+//    return MaterialPageRoute(
+//      settings: this,
+//      builder: (BuildContext context) {
+//        return ProjectPageTemplate(projectData: project);
+//      },
+//    );
+//  }
+//}
