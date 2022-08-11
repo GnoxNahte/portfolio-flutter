@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/routing/url_route_information_parser.dart';
 import 'package:portfolio/routing/url_routing.dart';
 
 void main() {
@@ -21,7 +22,7 @@ class _PortfolioAppState extends State<PortfolioApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-        title: 'Home Page',
+        title: 'Portfolio Page',
         theme: _theme(),
         routerDelegate: _routerDelegate,
         routeInformationParser: _routeInformationParser,

@@ -8,11 +8,11 @@ class ErrorData {
   ErrorData(this.errorCode, this.errorMsg);
 }
 
-class ErorrPage extends StatelessWidget {
+class ErrorPage extends StatelessWidget {
 
   final ErrorData errorData;
 
-  const ErorrPage(this.errorData, {Key? key}) : super(key: key);
+  const ErrorPage(this.errorData, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -15,7 +15,7 @@ class ProjectPreview extends StatelessWidget {
       children: [
         InkWell(
           onTap: () {
-            UrlRouterDelegate.changePage("Projects/${project.name}");
+            UrlRouterDelegate.changePage("projects/${project.name}", arguments: project);
             //Navigator.push(
             //    context,
             //    MaterialPageRoute(

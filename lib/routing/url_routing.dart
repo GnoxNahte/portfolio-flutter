@@ -1,39 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:portfolio/data_models/project_data.dart';
 import 'package:portfolio/pages/error_page.dart';
 import 'package:portfolio/pages/home_page.dart';
 import 'package:portfolio/pages/project_page_template.dart';
 import 'package:portfolio/pages/projects_page.dart';
 import 'package:portfolio/routing/routing_constants.dart';
+import 'package:portfolio/extensions.dart';
 
-class UrlRoutePath {
-  late List<String> pathSegments;
-  late RouteSettings routeSettings;
+// The base code for the navigator is from this tutorial:
+// Tutorial link: https://medium.com/geekculture/a-simpler-guide-to-flutter-navigator-2-0-part-i-70623cedc93b
+// GitHub link: https://github.com/theLee3/flutter_nav_demo
+//
+// Instructions on how to add other pages:
+// 1. Add a new const in [RoutingConstants]
+// 2. Add a new switch case with the new const in [UrlRouterDelegate._createPage()]
 
-  String path;
+class UrlRouterDelegate extends RouterDelegate<List<RouteSettings>>
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin<List<RouteSettings>> {
+  // ================
+  // Private members
+  // ================
 
-  ErrorData? errorData;
+// Create a starting home page
+  List<Page> _pages = [
+    _createPage(const RouteSettings(name: RoutingConstants.homePageRoute))
+  ];
 
-  UrlRoutePath(this.path, {Object? arguments}) {
-    updatePath(path);
-  }
+  // ================
+  // Public members
+  // ================
 
-  UrlRoutePath copy() {
-    return UrlRoutePath(path, arguments: routeSettings.arguments);
-  }
+  @override
+  final navigatorKey = GlobalKey<NavigatorState>();
 
-  void updatePath(String path, {Object? arguments}) {
-    Uri uri = Uri.parse(path);
-    this.path = uri.path;
-    pathSegments = uri.pathSegments;
-    routeSettings = RouteSettings(name: path, arguments: arguments);
-  }
-}
+  @override
+  List<RouteSettings>? get currentConfiguration => List.of(_pages);
 
-class UrlRouterDelegate extends RouterDelegate<UrlRoutePath>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin<UrlRoutePath> {
-  UrlRoutePath _currRoutePath;
-  List<UrlRoutePath> _pages; // History of pages
+  // ================
+  // Singleton
+  // ================
 
   static final UrlRouterDelegate _instance =
       UrlRouterDelegate._privateConstructor();
@@ -42,137 +48,131 @@ class UrlRouterDelegate extends RouterDelegate<UrlRoutePath>
     return _instance;
   }
 
-  @override
-  final GlobalKey<NavigatorState> navigatorKey;
+  UrlRouterDelegate._privateConstructor();
 
-  UrlRouterDelegate._privateConstructor()
-      : navigatorKey = GlobalKey<NavigatorState>(),
-        _currRoutePath = UrlRoutePath("/"),
-        _pages = [];
+  // ================
+  // Public functions
+  // ================
 
-  @override
-  UrlRoutePath? get currentConfiguration {
-    return _currRoutePath;
+  static void changePage(String url, {Object? arguments}) {
+    url = "/$url";
+    _instance._pages
+        .add(_createPage(RouteSettings(name: url, arguments: arguments)));
+
+    _instance._onChangePage();
   }
 
-  static void changePage(String url) {
-    _instance._currRoutePath.updatePath(url);
-    _instance._pages.add(_instance._currRoutePath.copy());
-    _instance.notifyListeners();
-    debugPrint(
-        "Change page to $url, currRoutePath: ${_instance._currRoutePath.path}");
-  }
+  // ==================
+  // Override functions
+  // ==================
 
   @override
   Widget build(BuildContext context) {
     return Navigator(
       key: navigatorKey,
       pages: [
-        const MaterialPage(
-          key: ValueKey("HomePage"),
-          child: HomePage(),
-        ),
-        if (_currRoutePath.pathSegments.length == 1 &&
-            _currRoutePath.pathSegments[0] == "projects")
-          const MaterialPage(
-            key: ValueKey("ProjectsPage"),
-            child: ProjectsPageWidget(),
-          )
-        else if (_currRoutePath.errorData != null)
-          MaterialPage(child: ErorrPage(_currRoutePath.errorData!))
-        else if (_currRoutePath.pathSegments.length == 2 &&
-            _currRoutePath.pathSegments[0] == "Projects")
-          ProjectPage(
-              ProjectData.getProject(projects, _currRoutePath.pathSegments[1]))
+        if (_pages.isEmpty)
+          const MaterialPage(key: ValueKey("HomePage"), child: HomePage())
+        else
+          _pages.last
       ],
       onPopPage: (route, result) {
         if (!route.didPop(result)) {
           return false;
         }
 
-        if (_pages.length > 1) {
-          _pages.removeLast();
-          _currRoutePath = _pages.last;
-        } else {
-          debugPrint("_pages.length <= 1, Setting it to home page");
-          _currRoutePath = UrlRoutePath("/");
-        }
-
-        debugPrint("Page Popped");
-        notifyListeners();
-
+        _onChangePage();
         return true;
       },
     );
   }
 
   @override
-  Future<void> setNewRoutePath(UrlRoutePath configuration) async {
+  Future<void> setNewRoutePath(List<RouteSettings> configuration) async {
     _pages.clear();
-    _currRoutePath = configuration;
-    _pages.add(_currRoutePath.copy());
-    debugPrint("New route Set: ${configuration.path}");
+    _pages = configuration
+        .map((routeSettings) => _createPage(routeSettings))
+        .toList();
+
+    if (_pages.first.name != RoutingConstants.homePageRoute) {
+      _pages.insert(
+          0,
+          _createPage(
+              const RouteSettings(name: RoutingConstants.homePageRoute)));
+    }
+
+    _onChangePage();
 
     return;
   }
 
-  List<Route<dynamic>> _generatePages(RouteSettings settings) {
-    Widget screen;
+  // ==================
+  // Private functions
+  // ==================
 
-    switch (settings.name) {
-      case homePageRoute:
-        screen = const HomePage();
-        break;
-      case projectsPageRoute:
-        screen = const ProjectsPageWidget();
-        break;
-      default:
-        // TODO: Implement a 'page not found' page
-        debugPrint(
-            "Can't find page [${settings.name}]. Returning to home page");
-        screen = const HomePage();
-        break;
-    }
+  static Page _createPage(RouteSettings routeSettings) {
+    Widget child = ErrorPage(ErrorData(404, "Page not found"));
 
-    return [MaterialPageRoute(builder: (context) => screen)];
-  }
-}
-
-class UrlRouteInformationParser extends RouteInformationParser<UrlRoutePath> {
-  //@override
-  //Future<UrlRoutePath> parseRouteInformation(RouteInformation routeInfo) async {
-  //  final Uri uri = Uri.parse(routeInfo.location);
-  //}
-  @override
-  Future<UrlRoutePath> parseRouteInformation(
-      RouteInformation routeInformation) async {
-    if (routeInformation.location == null) {
-      return UrlRoutePath("/404");
-    }
-    final Uri uri = Uri.parse(routeInformation.location!);
-    final numOfSegements = uri.pathSegments.length;
-
-    if (numOfSegements == 0) {
-      return UrlRoutePath("/");
-    } else if (numOfSegements == 1) {
-      // TOOD: Change to use dictionary then loop through it
-      if (uri.path == projectsPageRoute || uri.path == aboutRoute) {
-        return UrlRoutePath(uri.path);
-      }
-    } else if (numOfSegements == 2) {
-      if (uri.pathSegments[0] == "projects" &&
-          ProjectData.ifProjectExists(projects, uri.pathSegments[1])) {
-        return UrlRoutePath(uri.path);
+    if (routeSettings.name == null) {
+      debugPrint("ERROR! routeSettings.name == null");
+      child = ErrorPage(ErrorData(404, "Page not found"));
+    } else {
+      Uri uri = Uri.parse(routeSettings.name!);
+      if (uri.pathSegments.isEmpty) {
+        child = const HomePage();
       } else {
-        return UrlRoutePath("/404");
+        switch (uri.pathSegments[0]) {
+          // ========== Home page ==========
+          case RoutingConstants.homePageRoute:
+            child = const HomePage();
+            break;
+
+          // ========== Projects & ProjectTemplate page ==========
+          case RoutingConstants.projectsPageRoute:
+            if (uri.pathSegments.length == 1) {
+              child = const ProjectsPage();
+            } else if (uri.pathSegments.length == 2) {
+              child = ProjectPageTemplate(
+                  projectData: routeSettings.arguments! as ProjectData);
+            }
+            break;
+
+          // ========== Error page ==========
+          default:
+            child = ErrorPage(ErrorData(404, "Page not found"));
+        }
       }
     }
 
-    return UrlRoutePath("/404");
+    return MaterialPage(
+      child: child,
+      key: Key(routeSettings.toString()) as LocalKey,
+      name: routeSettings.name,
+      arguments: routeSettings.arguments,
+    );
   }
 
-  @override
-  RouteInformation? restoreRouteInformation(UrlRoutePath configuration) {
-    return RouteInformation(location: configuration.path);
+  void _onChangePage() {
+    Page newPage = _pages.last;
+
+    String pageName;
+    List<String> pathSegments = Uri.parse(newPage.name!).pathSegments;
+
+    if (pathSegments.isEmpty) {
+      pageName = "Home";
+    } else {
+      pageName = pathSegments.last;
+    }
+
+    pageName = pageName.capitalizeFirstLetter();
+
+    SystemChrome.setApplicationSwitcherDescription(
+      ApplicationSwitcherDescription(
+        label: pageName,
+        primaryColor: 0xffaaaaaa,
+      ),
+    );
+
+    notifyListeners();
   }
 }
