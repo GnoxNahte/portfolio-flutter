@@ -6,13 +6,14 @@ class PortfolioAppBar extends StatelessWidget implements PreferredSizeWidget {
   final AppBar appBar;
   final String pageName;
 
-  const PortfolioAppBar({Key? key, required this.appBar, required this.pageName}) : super(key: key);
+  const PortfolioAppBar(
+      {Key? key, required this.appBar, required this.pageName})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: 
-      FittedBox(
+      title: FittedBox(
         fit: BoxFit.fitHeight,
         child: Text(
           pageName,
@@ -20,20 +21,37 @@ class PortfolioAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       backgroundColor: Theme.of(context).secondaryHeaderColor,
       actions: [
+
+        // ========== Home ==========
         OutlinedButton(
           child: const Text(
             "Home",
             style: TextStyle(color: Colors.white),
           ),
           // ignore: avoid_print
-          onPressed: () => UrlRouterDelegate.changePage(RoutingConstants.homePageRoute),
+          onPressed: () =>
+              UrlRouterDelegate.changePage(RoutingConstants.homePageRoute),
         ),
-        
+
+        // ========== Projects ==========
         OutlinedButton(
-          child: const Text("Projects",
-            style: TextStyle(color: Colors.white),),
-          onPressed: () => UrlRouterDelegate.changePage(RoutingConstants.projectsPageRoute),
-        )
+          child: const Text(
+            "Projects",
+            style: TextStyle(color: Colors.white),
+          ),
+          onPressed: () =>
+              UrlRouterDelegate.changePage(RoutingConstants.projectsPageRoute),
+        ),
+
+        // ========== About ==========
+        OutlinedButton(
+          child: const Text(
+            "About",
+            style: TextStyle(color: Colors.white),
+          ),
+          onPressed: () =>
+              UrlRouterDelegate.changePage(RoutingConstants.aboutRoute),
+        ),
       ],
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:portfolio/data_models/project_data.dart';
+import 'package:portfolio/pages/about_page.dart';
 import 'package:portfolio/pages/error_page.dart';
 import 'package:portfolio/pages/home_page.dart';
 import 'package:portfolio/pages/project_page_template.dart';
@@ -135,6 +136,11 @@ class UrlRouterDelegate extends RouterDelegate<List<RouteSettings>>
               child = ProjectPageTemplate(
                   projectData: routeSettings.arguments! as ProjectData);
             }
+            break;
+
+          // ========== About page ==========
+          case RoutingConstants.aboutRoute:
+            child = const AboutPage();
             break;
 
           // ========== Error page ==========

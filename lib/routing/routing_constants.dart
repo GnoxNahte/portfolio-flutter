@@ -4,5 +4,6 @@ class RoutingConstants {
   // Indiviual project pages is shows as "projects/project_name"
 
   static const String aboutRoute = "about";
+  
   static const String errorRoute = "error";
 }
