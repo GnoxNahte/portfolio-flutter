@@ -25,16 +25,17 @@ class UrlRouteInformationParser extends RouteInformationParser<List<RouteSetting
   @override
   RouteInformation restoreRouteInformation(List<RouteSettings> configuration) {
     final location = configuration.last.name;
-    final arguments = _restoreArguments(configuration.last);
+    //final arguments = _restoreArguments(configuration.last);
 
-    return RouteInformation(location: '$location$arguments');
+    //return RouteInformation(location: '$location$arguments');
+    return RouteInformation(location: location);
   }
 
-  String _restoreArguments(RouteSettings routeSettings) {
-    if (routeSettings.name != '/recipe') return '';
-
-    return '?id=${(routeSettings.arguments as Map)['id'].toString()}';
-  }
+  //String _restoreArguments(RouteSettings routeSettings) {
+  //  if (routeSettings.name != '/projects') return '';
+  //
+  //  return '?id=${(routeSettings.arguments as Map)['id'].toString()}';
+  //}
   
 
 }
